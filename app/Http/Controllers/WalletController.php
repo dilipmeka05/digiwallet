@@ -14,13 +14,19 @@ use DB;
 class WalletController extends Controller
 {
     private $dailyLimit = 10000;
-    private $suspiciousThreshold = 5000; 
+    private $suspiciousThreshold = 5000;
     private $suspiciousTimeFrame = 10;
 
     public function balance()
     {
         $user = JWTAuth::parseToken()->authenticate();
         return response()->json(['balance' => $user->wallet->balance]);
+    }
+
+    public function info()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        return response()->json($user);
     }
 
     public function addFunds(Request $request)
@@ -193,7 +199,7 @@ class WalletController extends Controller
             $user = JWTAuth::parseToken()->authenticate();
 
             $validated = $request->validate([
-                'currency' => 'required|string|in:USD,EUR,GBP', 
+                'currency' => 'required|string|in:USD,EUR,GBP',
             ]);
 
             $wallet = Wallet::where('user_id', $user->id)->first();
